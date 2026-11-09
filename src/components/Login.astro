@@ -1,0 +1,242 @@
+<button
+  class="login-button"
+  type="button"
+  popovertarget="login-panel"
+>
+  Login
+</button>
+
+<section
+  id="login-panel"
+  class="login-panel"
+  popover="auto"
+  aria-labelledby="login-title"
+>
+  <div class="panel-heading">
+    <h2 id="login-title">Login</h2>
+
+    <button
+      class="close-button"
+      type="button"
+      popovertarget="login-panel"
+      popovertargetaction="hide"
+      aria-label="Close login"
+    >
+      ×
+    </button>
+  </div>
+
+  <p class="login-description">
+    Welcome back! Enter your details below.
+  </p>
+
+  <form id="login-form">
+    <div class="form-field">
+      <label for="login-email">Email address</label>
+      <input
+        id="login-email"
+        type="email"
+        autocomplete="username"
+        placeholder="you@example.com"
+        required
+      />
+    </div>
+
+    <div class="form-field">
+      <label for="login-password">Password</label>
+      <input
+        id="login-password"
+        type="password"
+        autocomplete="current-password"
+        required
+      />
+    </div>
+
+    <button class="submit-button" type="submit">
+      Log in
+    </button>
+
+    <p class="demo-note">
+      Demo only. Use test details, not your real password.
+    </p>
+
+    <p id="login-message" role="status"></p>
+  </form>
+</section>
+
+<script>
+  const form = document.querySelector("#login-form");
+  const message = document.querySelector("#login-message");
+
+  form?.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    if (message) {
+      message.textContent =
+        "This is a demo. No details have been sent or saved.";
+    }
+  });
+</script>
+
+<style>
+  @layer components {
+    .login-button {
+      padding: 0.35rem 1.5rem;
+      border: 0;
+      border-radius: var(--radius-pill);
+      background: var(--color-surface-secondary);
+      color: var(--color-text);
+      font: inherit;
+      anchor-name: --login-button;
+      display: none;
+    }
+
+    .login-panel {
+      box-sizing: border-box;
+      width: min(350px, calc(100vw - 2rem));
+      max-height: calc(100dvh - 2rem);
+      overflow-y: auto;
+      padding: 1.5rem;
+      border: 1px solid var(--color-neutrals-400);
+      border-radius: var(--radius-large);
+      background: var(--color-surface-primary);
+      color: var(--color-text);
+      box-shadow: var(--shadow-popover);
+      text-align: left;
+      overflow-wrap: anywhere;
+    }
+
+    .panel-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .panel-heading h2 {
+      margin: 0;
+      font-size: var(--font-size-heading-small);
+    }
+
+    .close-button {
+      display: none;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: var(--color-surface-secondary);
+      color: var(--color-text);
+      font-size: 1.5rem;
+    }
+
+    .login-description {
+      margin: 0 0 1.25rem;
+      color: var(--color-text-muted);
+    }
+
+    .form-field {
+      display: grid;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    label {
+      font-weight: bold;
+    }
+
+    input {
+      box-sizing: border-box;
+      width: 100%;
+      min-width: 0;
+      padding: 0.75rem;
+      border: 1px solid var(--color-neutrals-400);
+      border-radius: 8px;
+      background: var(--color-surface-primary);
+      color: var(--color-text);
+      font: inherit;
+    }
+
+    .submit-button {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 0;
+      border-radius: var(--radius-pill);
+      background: var(--color-action);
+      color: var(--color-text);
+      font: inherit;
+      font-weight: bold;
+    }
+
+    /* Almindelig farve som fallback. */
+    .submit-button:hover,
+    .submit-button:focus-visible {
+      background: #e6b83b;
+    }
+
+    /* Ekstra forbedring:
+       Lav en mørkere farve ud fra vores eksisterende token. */
+    @supports (background: hsl(from #ffcc4a h s calc(l - 8))) {
+      .submit-button:hover,
+      .submit-button:focus-visible {
+        background: hsl(from var(--color-action) h s calc(l - 8));
+      }
+    }
+
+    .demo-note,
+    #login-message {
+      margin: 1rem 0 0;
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+    }
+
+    #login-message:empty {
+      display: none;
+    }
+
+    /* Centreret popover er vores basisplacering. */
+    @supports selector(:popover-open) {
+      .login-button {
+        display: inline-block;
+      }
+
+      .close-button {
+        display: grid;
+      }
+
+      .login-panel {
+        position: fixed;
+        inset: 0;
+        margin: auto;
+      }
+    }
+
+    /* På brede skærme placeres panelet ved Login-knappen,
+       når browseren understøtter Anchor Positioning. */
+    @supports (anchor-name: --login-button) and
+      (position-anchor: --login-button) and
+      (top: anchor(bottom)) {
+      @media (min-width: 701px) {
+        .login-panel {
+          position-anchor: --login-button;
+          inset: auto;
+          top: calc(anchor(bottom) + 0.75rem);
+          right: anchor(right);
+          margin: 0;
+          max-height: calc(100dvh - 8rem);
+        }
+      }
+    }
+
+    /* Uden Popover API vises formularen i headeren. */
+    @supports not selector(:popover-open) {
+      .login-panel {
+        position: static;
+        margin-inline: auto;
+        box-shadow: none;
+      }
+    }
+  }
+</style>
